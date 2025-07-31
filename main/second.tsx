@@ -1,21 +1,16 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import type { Totals } from "@/main/first"; // same shared type (or copy it here)
 
-/* ---------- shared type ---------- */
-export type Totals = {
-  totalGr: number;
-  totalKv: number;
-  totalMek: number;
-  totalPrice: number;
+type SecondProps = {
+  onTotalsChange?: (t: Totals) => void;
 };
 
-type FirstProps = { onTotalsChange?: (t: Totals) => void };
-
-const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
+const Second: React.FC<SecondProps> = ({ onTotalsChange }) => {
   const [calculations, setCalculations] = useState([{ id: 1, x: "", y: "" }]);
 
-  /* ----------------- helpers (unchanged) ----------------- */
+  /* ───────── helpers (unchanged) ───────── */
   const addCalculation = () => {
     const newId =
       calculations.length === 0
@@ -57,14 +52,14 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
   const getResults = (c: { x: string; y: string }) => {
     const x = c.x === "" ? 0 : Number(c.x);
     const y = c.y === "" ? 0 : Number(c.y);
-    const gr = x * 5 + y * 3;
+    const gr = x * 7 + y * 4; // <-- your formula
     const kv = x * y;
-    const mek = 0;
-    const price = gr * 55 + kv * 52 + 350;
+    const mek = 2;
+    const price = gr * 55 + kv * 52 + 700;
     return { gr, kv, mek, price };
   };
 
-  /* ---------- memoised totals ---------- */
+  /* ───────── totals (memoised) ───────── */
   const totals: Totals = useMemo(() => {
     return calculations.reduce(
       (tot, c) => {
@@ -80,13 +75,13 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
     );
   }, [calculations]);
 
-  /* ---------- notify parent when the *values* change ---------- */
+  /* ───────── notify parent only when values change ───────── */
   const { totalGr, totalKv, totalMek, totalPrice } = totals;
   useEffect(() => {
     onTotalsChange?.(totals);
   }, [totalGr, totalKv, totalMek, totalPrice, onTotalsChange]);
 
-  /* ----------------- UI (unchanged) ----------------- */
+  /* ───────── UI (unchanged) ───────── */
   return (
     <div className="p-4">
       {calculations.map((c, i) => {
@@ -114,6 +109,7 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
                 placeholder="x"
                 className="w-16 h-16 text-center border rounded p-2"
               />
+
               <div className="flex flex-col items-center">
                 <Image
                   src="/1.png"
@@ -127,7 +123,7 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
                   value={c.y}
                   onChange={(e) => handleYChange(c.id, e)}
                   placeholder="y"
-                  className="w-16  mt-2 text-center border rounded p-2"
+                  className="w-16 mt-2 text-center border rounded p-2"
                 />
               </div>
             </div>
@@ -162,4 +158,4 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
   );
 };
 
-export default First;
+export default Second;
