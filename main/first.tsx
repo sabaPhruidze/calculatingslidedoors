@@ -8,20 +8,25 @@ export type Totals = {
   totalKv: number;
   totalMek: number;
   totalPrice: number;
+  totalQuantity: number;
 };
 
 type FirstProps = { onTotalsChange?: (t: Totals) => void };
 
 const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
-  const [calculations, setCalculations] = useState([{ id: 1, x: "", y: "" }]);
+  const [calculations, setCalculations] = useState([
+    { id: 1, x: "", y: "", quantity: "0" },
+  ]);
 
-  /* ----------------- helpers (unchanged) ----------------- */
   const addCalculation = () => {
     const newId =
       calculations.length === 0
         ? 1
         : Math.max(...calculations.map((c) => c.id)) + 1;
-    setCalculations([...calculations, { id: newId, x: "", y: "" }]);
+    setCalculations([
+      ...calculations,
+      { id: newId, x: "", y: "", quantity: "0" },
+    ]);
   };
 
   const removeCalculation = (id: number) => {
@@ -54,29 +59,46 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
     }
   };
 
-  const getResults = (c: { x: string; y: string }) => {
+  const handleQuantityChange = (
+    id: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const v = e.target.value;
+    if (v === "" || Number(v) >= 0) {
+      setCalculations(
+        calculations.map((c) => (c.id === id ? { ...c, quantity: v } : c))
+      );
+    }
+  };
+
+  const getResults = (c: { x: string; y: string; quantity: string }) => {
     const x = c.x === "" ? 0 : Number(c.x);
     const y = c.y === "" ? 0 : Number(c.y);
+    const quantity = c.quantity === "" ? 0 : Number(c.quantity);
+
     const gr = x * 5 + y * 3;
     const kv = x * y;
-    const mek = 0;
-    const price = gr * 55 + kv * 52 + 350;
+    const mek = quantity;
+    const basePrice = gr * 55 + kv * 52 + 350;
+    const price = basePrice * quantity;
+
     return { gr, kv, mek, price };
   };
 
-  /* ---------- memoised totals ---------- */
   const totals: Totals = useMemo(() => {
     return calculations.reduce(
       (tot, c) => {
         const r = getResults(c);
+        const quantity = c.quantity === "" ? 0 : Number(c.quantity);
         return {
-          totalGr: tot.totalGr + r.gr,
-          totalKv: tot.totalKv + r.kv,
+          totalGr: r.gr * quantity + tot.totalGr,
+          totalKv: r.kv * quantity + tot.totalKv,
           totalMek: tot.totalMek + r.mek,
           totalPrice: tot.totalPrice + r.price,
+          totalQuantity: tot.totalQuantity + quantity,
         };
       },
-      { totalGr: 0, totalKv: 0, totalMek: 0, totalPrice: 0 }
+      { totalGr: 0, totalKv: 0, totalMek: 0, totalPrice: 0, totalQuantity: 0 }
     );
   }, [calculations]);
 
@@ -86,11 +108,12 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
     onTotalsChange?.(totals);
   }, [totalGr, totalKv, totalMek, totalPrice, onTotalsChange]);
 
-  /* ----------------- UI (unchanged) ----------------- */
+  /* ----------------- UI ----------------- */
   return (
     <div className="p-4">
       {calculations.map((c, i) => {
         const r = getResults(c);
+        const quantity = Number(c.quantity) || 0;
 
         return (
           <div key={c.id} className="mb-8">
@@ -112,7 +135,7 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
                 value={c.x}
                 onChange={(e) => handleXChange(c.id, e)}
                 placeholder="x"
-                className="w-16 h-16 text-center border rounded p-2"
+                className="w-16 h-10 text-center border rounded p-2"
               />
               <div className="flex flex-col items-center">
                 <Image
@@ -132,9 +155,29 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
               </div>
             </div>
 
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">რაოდ:</label>
+              <input
+                type="number"
+                value={c.quantity}
+                onChange={(e) => handleQuantityChange(c.id, e)}
+                placeholder="რაოდენობა"
+                className="w-24 text-center border rounded p-2"
+                min="0"
+              />
+            </div>
+
             <div className="bg-gray-50 p-4 rounded border w-[580px] ml-2">
-              <div className="mb-2">გრ: {r.gr}</div>
-              <div className="mb-2">კვ: {r.kv.toFixed(2)}</div>
+              <div className="mb-2">
+                გრ სრული: {r.gr * quantity}, 1 ცალი - {r.gr}
+              </div>
+              <div className="mb-2">
+                კვ სრული: {(r.kv * quantity).toFixed(2)}, 1 ცალი - კვ:{" "}
+                {r.kv.toFixed(2)}
+              </div>
+              <div className="mb-2">
+                რაოდ: {c.quantity === "" ? 0 : Number(c.quantity)}
+              </div>
               <div className="mb-2">მექ: {r.mek}</div>
               <div>ფასი: {r.price} $</div>
             </div>
@@ -154,6 +197,7 @@ const First: React.FC<FirstProps> = ({ onTotalsChange }) => {
           <h4 className="font-bold text-lg mb-3 text-blue-800">მთლიანი:</h4>
           <div className="mb-2">მთლიანი გრ: {totals.totalGr}</div>
           <div className="mb-2">მთლიანი კვ: {totals.totalKv.toFixed(2)}</div>
+          <div className="mb-2">მთლიანი რაოდ: {totals.totalQuantity}</div>
           <div className="mb-2">მთლიანი მექ: {totals.totalMek}</div>
           <div>მთლიანი ფასი: {totals.totalPrice} $</div>
         </div>
