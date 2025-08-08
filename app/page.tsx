@@ -5,6 +5,8 @@ import Second from "@/main/second";
 import Third from "@/main/third";
 import Fourth from "@/main/fourth";
 import Five from "@/main/five";
+import Six from "@/main/six";
+import Seven from "@/main/seven";
 
 export default function Home() {
   const [firstTotals, setFirstTotals] = useState<Totals | null>(null);
@@ -12,12 +14,19 @@ export default function Home() {
   const [thirdTotals, setThirdTotals] = useState<Totals | null>(null);
   const [fourthTotals, setFourthTotals] = useState<Totals | null>(null);
   const [fifthTotals, setFifthTotals] = useState<Totals | null>(null);
+  const [sixthTotals, setSixthTotals] = useState<Totals | null>(null);
+  const [seventhTotals, setSeventhTotals] = useState<Totals | null>(null);
 
   const handleFirstTotals = useCallback((t: Totals) => setFirstTotals(t), []);
   const handleSecondTotals = useCallback((t: Totals) => setSecondTotals(t), []);
   const handleThirdTotals = useCallback((t: Totals) => setThirdTotals(t), []);
   const handleFourthTotals = useCallback((t: Totals) => setFourthTotals(t), []);
   const handleFifthTotals = useCallback((t: Totals) => setFifthTotals(t), []);
+  const handleSixthTotals = useCallback((t: Totals) => setSixthTotals(t), []);
+  const handleSeventhTotals = useCallback(
+    (t: Totals) => setSeventhTotals(t),
+    []
+  );
 
   const grand = useMemo(() => {
     if (
@@ -25,7 +34,9 @@ export default function Home() {
       !secondTotals ||
       !thirdTotals ||
       !fourthTotals ||
-      !fifthTotals
+      !fifthTotals ||
+      !sixthTotals ||
+      !seventhTotals
     ) {
       return null;
     }
@@ -35,32 +46,50 @@ export default function Home() {
         secondTotals.totalGr +
         thirdTotals.totalGr +
         fourthTotals.totalGr +
-        fifthTotals.totalGr,
+        fifthTotals.totalGr +
+        sixthTotals.totalGr +
+        seventhTotals.totalGr,
       totalKv:
         firstTotals.totalKv +
         secondTotals.totalKv +
         thirdTotals.totalKv +
         fourthTotals.totalKv +
-        fifthTotals.totalKv,
+        fifthTotals.totalKv +
+        sixthTotals.totalKv +
+        seventhTotals.totalKv,
       totalMek:
         firstTotals.totalMek +
         secondTotals.totalMek +
         thirdTotals.totalMek +
         fourthTotals.totalMek +
-        fifthTotals.totalMek,
+        fifthTotals.totalMek +
+        sixthTotals.totalMek +
+        seventhTotals.totalMek,
       totalPrice:
         firstTotals.totalPrice +
         secondTotals.totalPrice +
         thirdTotals.totalPrice +
         fourthTotals.totalPrice +
-        fifthTotals.totalPrice,
+        fifthTotals.totalPrice +
+        sixthTotals.totalPrice +
+        seventhTotals.totalPrice,
     };
-  }, [firstTotals, secondTotals, thirdTotals, fourthTotals, fifthTotals]);
+  }, [
+    firstTotals,
+    secondTotals,
+    thirdTotals,
+    fourthTotals,
+    fifthTotals,
+    sixthTotals,
+    seventhTotals,
+  ]);
 
   return (
     <div className="space-y-8 p-4">
       <First onTotalsChange={handleFirstTotals} />
+      <Six onTotalsChange={handleSixthTotals} />
       <Second onTotalsChange={handleSecondTotals} />
+      <Seven onTotalsChange={handleSeventhTotals} />
       <Third onTotalsChange={handleThirdTotals} />
       <Fourth onTotalsChange={handleFourthTotals} />
       <Five onTotalsChange={handleFifthTotals} />
@@ -68,7 +97,7 @@ export default function Home() {
       {grand && (
         <div className="border p-4 rounded bg-green-50">
           <h2 className="font-bold mb-2 text-lg">
-            ჯამური მონაცემები (1+2+3+4+5)
+            ჯამური მონაცემები (1+2+3+4+5+6+7)
           </h2>
           <p>გრ: {grand.totalGr}</p>
           <p>კვ: {grand.totalKv.toFixed(2)}</p>
