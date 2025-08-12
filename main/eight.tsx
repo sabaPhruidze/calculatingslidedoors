@@ -189,7 +189,7 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
               />
             </div>
 
-            <div className="bg-gray-50 p-4 rounded border w-[580px] ml-2">
+            <div className="bg-gray-50 dark:bg-white p-4 rounded border dark:border-gray-200 dark:text-gray-900 w-full sm:w-[580px] min-w-[330px] ml-2">
               <div className="mb-2">
                 გრ სრული: {r.gr * quantity}, 1 ცალი - {r.gr}
               </div>
@@ -215,8 +215,8 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
       </button>
 
       {calculations.length > 1 && (
-        <div className="bg-blue-50 p-4 rounded border w-[580px] ml-2 border-blue-200">
-          <h4 className="font-bold text-lg mb-3 text-blue-800">
+        <div className="bg-blue-50 p-4 rounded border min-w-[330px] w-[580px] ml-2 border-blue-200">
+          <h4 className="font-bold text-lg mb-3 text-black">
             მთლიანი (Eight):
           </h4>
           <div className="mb-2">მთლიანი გრ: {totals.totalGr}</div>

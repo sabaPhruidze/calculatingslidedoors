@@ -125,7 +125,7 @@ export default function Home() {
       <Ten onTotalsChange={handleTenthTotals} />
 
       {grand && (
-        <div className="border p-4 rounded bg-green-50">
+        <div className="bg-gray-50 dark:bg-white p-4 rounded border dark:border-gray-200 dark:text-gray-900 w-[580px] min-w-[330px] ml-2">
           <h2 className="font-bold mb-2 text-lg">
             ჯამური მონაცემები (1+2+3+4+5+6+7+8+9+10)
           </h2>

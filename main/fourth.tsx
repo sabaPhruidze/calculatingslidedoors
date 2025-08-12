@@ -161,7 +161,7 @@ const Fourth: React.FC<FourthProps> = ({ onTotalsChange }) => {
               />
             </div>
 
-            <div className="bg-gray-50 p-4 rounded border w-[580px] ml-2">
+            <div className="bg-gray-50 dark:bg-white p-4 rounded border dark:border-gray-200 dark:text-gray-900 w-full sm:w-[580px] min-w-[330px] ml-2">
               <div className="mb-2">
                 გრ სრული: {r.gr * quantity}, 1 ცალი - {r.gr}
               </div>
