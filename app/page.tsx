@@ -7,6 +7,9 @@ import Fourth from "@/main/fourth";
 import Five from "@/main/five";
 import Six from "@/main/six";
 import Seven from "@/main/seven";
+import Eight from "@/main/eight";
+import Nine from "@/main/nine";
+import Ten from "@/main/ten";
 
 export default function Home() {
   const [firstTotals, setFirstTotals] = useState<Totals | null>(null);
@@ -16,6 +19,9 @@ export default function Home() {
   const [fifthTotals, setFifthTotals] = useState<Totals | null>(null);
   const [sixthTotals, setSixthTotals] = useState<Totals | null>(null);
   const [seventhTotals, setSeventhTotals] = useState<Totals | null>(null);
+  const [eighthTotals, setEighthTotals] = useState<Totals | null>(null);
+  const [ninthTotals, setNinthTotals] = useState<Totals | null>(null);
+  const [tenthTotals, setTenthTotals] = useState<Totals | null>(null);
 
   const handleFirstTotals = useCallback((t: Totals) => setFirstTotals(t), []);
   const handleSecondTotals = useCallback((t: Totals) => setSecondTotals(t), []);
@@ -27,6 +33,9 @@ export default function Home() {
     (t: Totals) => setSeventhTotals(t),
     []
   );
+  const handleEighthTotals = useCallback((t: Totals) => setEighthTotals(t), []);
+  const handleNinthTotals = useCallback((t: Totals) => setNinthTotals(t), []);
+  const handleTenthTotals = useCallback((t: Totals) => setTenthTotals(t), []);
 
   const grand = useMemo(() => {
     if (
@@ -36,7 +45,10 @@ export default function Home() {
       !fourthTotals ||
       !fifthTotals ||
       !sixthTotals ||
-      !seventhTotals
+      !seventhTotals ||
+      !eighthTotals ||
+      !ninthTotals ||
+      !tenthTotals
     ) {
       return null;
     }
@@ -48,7 +60,10 @@ export default function Home() {
         fourthTotals.totalGr +
         fifthTotals.totalGr +
         sixthTotals.totalGr +
-        seventhTotals.totalGr,
+        seventhTotals.totalGr +
+        eighthTotals.totalGr +
+        ninthTotals.totalGr +
+        tenthTotals.totalGr,
       totalKv:
         firstTotals.totalKv +
         secondTotals.totalKv +
@@ -56,7 +71,10 @@ export default function Home() {
         fourthTotals.totalKv +
         fifthTotals.totalKv +
         sixthTotals.totalKv +
-        seventhTotals.totalKv,
+        seventhTotals.totalKv +
+        eighthTotals.totalKv +
+        ninthTotals.totalKv +
+        tenthTotals.totalKv,
       totalMek:
         firstTotals.totalMek +
         secondTotals.totalMek +
@@ -64,7 +82,10 @@ export default function Home() {
         fourthTotals.totalMek +
         fifthTotals.totalMek +
         sixthTotals.totalMek +
-        seventhTotals.totalMek,
+        seventhTotals.totalMek +
+        eighthTotals.totalMek +
+        ninthTotals.totalMek +
+        tenthTotals.totalMek,
       totalPrice:
         firstTotals.totalPrice +
         secondTotals.totalPrice +
@@ -72,7 +93,10 @@ export default function Home() {
         fourthTotals.totalPrice +
         fifthTotals.totalPrice +
         sixthTotals.totalPrice +
-        seventhTotals.totalPrice,
+        seventhTotals.totalPrice +
+        eighthTotals.totalPrice +
+        ninthTotals.totalPrice +
+        tenthTotals.totalPrice,
     };
   }, [
     firstTotals,
@@ -82,6 +106,9 @@ export default function Home() {
     fifthTotals,
     sixthTotals,
     seventhTotals,
+    eighthTotals,
+    ninthTotals,
+    tenthTotals,
   ]);
 
   return (
@@ -91,13 +118,16 @@ export default function Home() {
       <Second onTotalsChange={handleSecondTotals} />
       <Seven onTotalsChange={handleSeventhTotals} />
       <Third onTotalsChange={handleThirdTotals} />
+      <Eight onTotalsChange={handleEighthTotals} />
       <Fourth onTotalsChange={handleFourthTotals} />
+      <Nine onTotalsChange={handleNinthTotals} />
       <Five onTotalsChange={handleFifthTotals} />
+      <Ten onTotalsChange={handleTenthTotals} />
 
       {grand && (
         <div className="border p-4 rounded bg-green-50">
           <h2 className="font-bold mb-2 text-lg">
-            ჯამური მონაცემები (1+2+3+4+5+6+7)
+            ჯამური მონაცემები (1+2+3+4+5+6+7+8+9+10)
           </h2>
           <p>გრ: {grand.totalGr}</p>
           <p>კვ: {grand.totalKv.toFixed(2)}</p>
