@@ -190,7 +190,7 @@ const Third: React.FC<ThirdProps> = ({ onTotalsChange }) => {
       </button>
 
       {calculations.length > 1 && (
-        <div className="bg-blue-50 p-4 rounded border w-[580px] ml-2 border-blue-200">
+        <div className="bg-gray-50 dark:bg-white p-4 rounded border dark:border-gray-200 dark:text-gray-900 w-full sm:w-[580px] min-w-[330px] ml-2">
           <h4 className="font-bold text-lg mb-3 text-blue-800">
             მთლიანი (Third):
           </h4>
