@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import type { Totals } from "@/main/first";
+import type { Totals } from "@/main/first"; // reuse the shared Totals type
 
-type EightProps = { onTotalsChange?: (t: Totals) => void };
+type ThirdProps = { onTotalsChange?: (t: Totals) => void };
 
-const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
+const Eight: React.FC<ThirdProps> = ({ onTotalsChange }) => {
   const [calculations, setCalculations] = useState([
-    { id: 1, x: "", z: "", y: "", quantity: "0" },
+    { id: 1, x: "", y: "", quantity: "0" },
   ]);
 
   const addCalculation = () => {
@@ -15,15 +15,15 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
       calculations.length === 0
         ? 1
         : Math.max(...calculations.map((c) => c.id)) + 1;
-    setCalculations([
-      ...calculations,
-      { id: newId, x: "", z: "", y: "", quantity: "0" },
+    setCalculations((prev) => [
+      ...prev,
+      { id: newId, x: "", y: "", quantity: "0" },
     ]);
   };
 
   const removeCalculation = (id: number) => {
     if (calculations.length > 1) {
-      setCalculations(calculations.filter((c) => c.id !== id));
+      setCalculations((prev) => prev.filter((c) => c.id !== id));
     }
   };
 
@@ -33,20 +33,8 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
   ) => {
     const v = e.target.value;
     if (v === "" || (Number(v) >= 0 && Number(v) <= 99)) {
-      setCalculations(
-        calculations.map((c) => (c.id === id ? { ...c, x: v } : c))
-      );
-    }
-  };
-
-  const handleZChange = (
-    id: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const v = e.target.value;
-    if (v === "" || (Number(v) >= 0 && Number(v) <= 99)) {
-      setCalculations(
-        calculations.map((c) => (c.id === id ? { ...c, z: v } : c))
+      setCalculations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, x: v } : c))
       );
     }
   };
@@ -57,8 +45,8 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
   ) => {
     const v = e.target.value;
     if (v === "" || (Number(v) >= 0 && Number(v) <= 99)) {
-      setCalculations(
-        calculations.map((c) => (c.id === id ? { ...c, y: v } : c))
+      setCalculations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, y: v } : c))
       );
     }
   };
@@ -69,28 +57,26 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
   ) => {
     const v = e.target.value;
     if (v === "" || Number(v) >= 0) {
-      setCalculations(
-        calculations.map((c) => (c.id === id ? { ...c, quantity: v } : c))
+      setCalculations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, quantity: v } : c))
       );
     }
   };
 
-  // Same model as Six
-  const getResults = (c: {
-    x: string;
-    z: string;
-    y: string;
-    quantity: string;
-  }) => {
+  // ---------- Third model (adjust as needed) ----------
+  // Example differences from First:
+  // - gr uses different weights
+  // - mek multiplies quantity by 3
+  // - basePrice has a different fixed cost
+  const getResults = (c: { x: string; y: string; quantity: string }) => {
     const x = c.x === "" ? 0 : Number(c.x);
-    const z = c.z === "" ? 0 : Number(c.z);
     const y = c.y === "" ? 0 : Number(c.y);
     const quantity = c.quantity === "" ? 0 : Number(c.quantity);
 
-    const gr = x * 4 + z * 2 + y * 3 + (y / 3) * 2;
+    const gr = x * 10 + y * 7;
     const kv = x * y;
-    const mek = quantity;
-    const basePrice = gr * 55 + kv * 52 + 350;
+    const mek = quantity * 2;
+    const basePrice = gr * 55 + kv * 52 + 700;
     const price = basePrice * quantity;
 
     return { gr, kv, mek, price };
@@ -113,11 +99,10 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
     );
   }, [calculations]);
 
-  // notify parent when the values change
   const { totalGr, totalKv, totalMek, totalPrice } = totals;
   useEffect(() => {
     onTotalsChange?.(totals);
-  }, [totalGr, totalKv, totalMek, totalPrice, onTotalsChange]);
+  }, [totalGr, totalKv, totalMek, totalPrice, onTotalsChange, totals]);
 
   return (
     <div className="p-4">
@@ -129,7 +114,7 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
           <div key={c.id} className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-lg">
-                გამოთვლა {i + 1} (Eight)
+                გამოთვლა {i + 1} (Third)
               </h3>
               {calculations.length > 1 && (
                 <button
@@ -142,26 +127,16 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
             </div>
 
             <div className="flex gap-4 mb-6">
-              <div className="flex flex-col items-center">
-                <input
-                  type="number"
-                  value={c.x}
-                  onChange={(e) => handleXChange(c.id, e)}
-                  placeholder="x"
-                  className="w-16 h-10 text-center border rounded p-2"
-                />
-                <input
-                  type="number"
-                  value={c.z}
-                  onChange={(e) => handleZChange(c.id, e)}
-                  placeholder="z"
-                  className="w-16 h-10 mt-2 text-center border rounded p-2 mt-40"
-                />
-              </div>
-
+              <input
+                type="number"
+                value={c.x}
+                onChange={(e) => handleXChange(c.id, e)}
+                placeholder="x"
+                className="w-16 h-10 text-center border rounded p-2"
+              />
               <div className="flex flex-col items-center">
                 <Image
-                  src="/7.png"
+                  src="/8.png"
                   alt="Image"
                   width={500}
                   height={300}
@@ -215,9 +190,9 @@ const Eight: React.FC<EightProps> = ({ onTotalsChange }) => {
       </button>
 
       {calculations.length > 1 && (
-        <div className="bg-blue-50 p-4 rounded border min-w-[330px] w-[580px] ml-2 border-blue-200">
-          <h4 className="font-bold text-lg mb-3 text-black">
-            მთლიანი (Eight):
+        <div className="bg-gray-50 dark:bg-white p-4 rounded border dark:border-gray-200 dark:text-gray-900 w-full sm:w-[580px] min-w-[330px] ml-2">
+          <h4 className="font-bold text-lg mb-3 text-blue-800">
+            მთლიანი (Third):
           </h4>
           <div className="mb-2">მთლიანი გრ: {totals.totalGr}</div>
           <div className="mb-2">მთლიანი კვ: {totals.totalKv.toFixed(2)}</div>
